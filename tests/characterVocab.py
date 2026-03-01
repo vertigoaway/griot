@@ -1,5 +1,6 @@
 import unittest
-import griot.char as char
+import griot.char as cT
+import griot.word as wT
 
 
 class testTokenizer(unittest.TestCase):
@@ -7,7 +8,7 @@ class testTokenizer(unittest.TestCase):
 
         return
     def testCharVocabClassTokenizationDetokenization(self):
-        voc = char.charVocab()
+        voc = cT.charVocab()
 
         voc.addCharacters(list('abcdefghijklmnopqrstuvwxyz '))
 
