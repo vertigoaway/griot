@@ -1,0 +1,2 @@
+# griot
+Text tokenization library
