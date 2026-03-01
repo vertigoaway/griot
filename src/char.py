@@ -1,13 +1,18 @@
+from typing import Generator
+import os
+import queue
 class Vocab():
     vocabDict : dict[str,int]
     tokenDict : dict[int,str]
     nulTok : tuple[int,str]
     eomTok : tuple[int,str]
+    freed : list[int]
     def __init__(self,nulTok=(0,'�'),eomTok=(1,'\n')) -> None:
         self.nulTok = nulTok
         self.eomTok = eomTok
         self.vocabDict = {nulTok[1]:nulTok[0],eomTok[1]:eomTok[0]}
         self.tokenDict = {nulTok[0]:nulTok[1],eomTok[0]:eomTok[1]}
+        self.freed = []
         return
     def __len__(self) -> int:
         """Get the current length of vocab."""
@@ -30,10 +35,12 @@ class Vocab():
             x = self.tokenDict[key]
             del self.tokenDict[key]
             del self.vocabDict[x]
+            self.freed.append(key)
         elif type(key) == str:
             x = self.vocabDict[key]
             del self.vocabDict[key]
             del self.tokenDict[x]
+            self.freed.append(x)
         else:
             raise TypeError
         return
@@ -60,19 +67,19 @@ class Vocab():
         else:
             raise TypeError
         return
-    def getFreeIndices(self, ct:int) -> list[int]:
-        x = len(self.tokenDict)
-        out = []
-        while len(out)<ct:
+    def freeIndices(self) -> Generator[int]:
+        while len(self.freed)>0:
+            yield self.freed.pop(0)
+        x : int = len(self.tokenDict)
+        while True:
             if self.tokenDict.get(x) == None:
-                out.append(x)
-            x+=1
-        return out
+                yield x
+                x+=1
 
     def addCharacters(self, chrs : list[str]) -> None:
-        indices : list[int] = self.getFreeIndices(len(chrs))
-        for i in indices:
-            self[i] = chrs.pop(-1)
+        indices = self.freeIndices()
+        for c in chrs:
+            self[next(indices)] = chrs.pop(-1)
         return
     def tokenizeLine(self,chrs:str)-> list[int]: 
         out : list[int]= []
@@ -95,3 +102,7 @@ class Vocab():
         for toks in toksList:
             out.append(self.detokenizeLine(toks))
         return out
+    def lazyTokenizeLines(self,lines:list[str]):
+        raise NotImplemented
+    def lazyDetokenizeLines(self,):
+        raise NotImplemented
