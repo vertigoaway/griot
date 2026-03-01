@@ -1,4 +1,5 @@
 from typing import Generator
+import pickle
 import os
 import queue
 class Vocab():
@@ -13,6 +14,15 @@ class Vocab():
         self.vocabDict = {nulTok[1]:nulTok[0],eomTok[1]:eomTok[0]}
         self.tokenDict = {nulTok[0]:nulTok[1],eomTok[0]:eomTok[1]}
         self.freed = []
+        return
+    def save(self,path:str) -> None:
+        with open(path,'wb') as file:
+            pickle.dump((self.vocabDict,self.nulTok,self.eomTok,self.freed),file)
+        return
+    def load(self,path:str) -> None:
+        with open(path,'rb') as file:
+            self.vocabDict,self.nulTok,self.eomTok,self.freed = pickle.load(file)
+        self.tokenDict = {v: k for k, v in self.vocabDict.items()}
         return
     def __len__(self) -> int:
         """Get the current length of vocab."""
