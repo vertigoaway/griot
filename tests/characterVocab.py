@@ -8,15 +8,20 @@ class testTokenizer(unittest.TestCase):
 
         return
     def testCharVocabClassTokenizationDetokenization(self):
-        voc = cT.charVocab()
+        voc = cT.Vocab()
 
-        voc.addCharacters(list('abcdefghijklmnopqrstuvwxyz '))
+        voc.addCharacters(['a','p','l','e',' '])
+        print(voc.vocabDict)
 
         x = voc.tokenizeLine('apple ')
         y = voc.detokenizeLine(x)
-        self.assertEqual(x,[28, 13, 13, 17, 24, 2, 1])
+        self.assertEqual(x,[2,3,3,4,5,6,1])
         self.assertEqual(y,'apple \n')
         return
     def testCharVocabClassCharacterDuplication(self):
 
         return
+    
+if __name__ == '__main__':
+
+    unittest.main()

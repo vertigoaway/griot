@@ -2,7 +2,6 @@ import unittest
 import griot.char as cT
 import griot.word as wT
 
-tinyDataset = 'apple orange banana tangerine, what is love? baby dont hurt me, baby dont hurt me, no more. this is a cool ass message'
 
 class testLooseWordVocab(unittest.TestCase):
 
@@ -18,4 +17,7 @@ class testLooseWordVocab(unittest.TestCase):
         z = vocab.tokenizeLine(y)
 
         a = vocab.detokenizeLine(z)
-    
+
+if __name__ == '__main__':
+    tinyDataset = 'apple orange banana tangerine, what is love? baby dont hurt me, baby dont hurt me, no more. this is a cool ass message'
+    unittest.main()
