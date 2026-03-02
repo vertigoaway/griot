@@ -1,13 +1,13 @@
 
 def encodeOneHot():
-    return
+    raise NotImplementedError
 
 def decodeOneHot():
-    return
+    raise NotImplementedError
 
 
 
 def encodePosition():
-    return
+    raise NotImplementedError
 def decodePosition():
-    return
+    raise NotImplementedError
