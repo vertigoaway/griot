@@ -221,7 +221,7 @@ class Vocab(): #no spacers, allows encoding parts of words
         else:
             raise TypeError
         return
-    def freeIndices(self) -> Generator[int]:
+    def freeIndices(self) -> Generator[int, None, None]:
         while len(self.freed)>0:
             yield self.freed.pop(0)
         x : int = len(self.tokenDict)

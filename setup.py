@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 setup(
     name="griot",
-    version="0.1.0",
+    version="0.1.1",
     author="verti",
     author_email="verti@piss.industries",
     description='Text tokenization library',
