@@ -89,7 +89,7 @@ class Vocab():
     def addCharacters(self, chrs : list[str]) -> None:
         indices = self.freeIndices()
         for c in chrs:
-            self[next(indices)] = chrs.pop(-1)
+            self[next(indices)] = c
         return
     def tokenizeLine(self,chrs:str)-> list[int]: 
         out : list[int]= []
