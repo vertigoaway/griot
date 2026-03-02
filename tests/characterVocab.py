@@ -11,12 +11,18 @@ class testTokenizer(unittest.TestCase):
         voc = cT.Vocab()
 
         voc.addCharacters(['a','p','l','e',' '])
-        print(voc.vocabDict)
 
         x = voc.tokenizeLine('apple ')
         y = voc.detokenizeLine(x)
+
         self.assertEqual(x,[2,3,3,4,5,6,1])
         self.assertEqual(y,'apple \n')
+        
+        z = voc.tokenizeLine(y)[:-1]
+        a = voc.detokenizeLine(z)
+
+        self.assertEqual(x,z)
+        self.assertEqual(y,a)
         return
     def testCharVocabClassCharacterDuplication(self):
 
