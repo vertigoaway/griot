@@ -114,5 +114,5 @@ class Vocab():
         return out
     def lazyTokenizeLines(self,lines:list[str]):
         raise NotImplemented
-    def lazyDetokenizeLines(self,):
+    def lazyDetokenizeLines(self,lines:list[list[int]]):
         raise NotImplemented
