@@ -87,9 +87,9 @@ class StrictVocab(): #all strings MUST seperate words with the spacer variable
             yield self.freed.pop(0)
         x : int = len(self.tokenDict)
         while True:
-            if self.tokenDict.get(x,self.nulTok[1]) == None:
+            if self.tokenDict.get(x,self.nulTok[1]) == self.nulTok[1]:
                 yield x
-                x+=1
+            x+=1
     def addWords(self,words:list[str] | str) -> None:
         if type(words) == str:
             words = words.split(self.spacer)
@@ -226,7 +226,7 @@ class Vocab(): #no spacers, allows encoding parts of words
             yield self.freed.pop(0)
         x : int = len(self.tokenDict)
         while True:
-            if self.tokenDict.get(x) == None:
+            if self.tokenDict.get(x,self.nulTok[1]) == self.nulTok[1]:
                 yield x
                 x+=1
     def addWords(self,words:list[str]) -> None:

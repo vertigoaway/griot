@@ -84,7 +84,7 @@ class Vocab():
         while True:
             if self.tokenDict.get(x,self.nulTok[1]) == self.nulTok[1]:
                 yield x
-                x+=1
+            x+=1
 
     def addCharacters(self, chrs : list[str]) -> None:
         indices = self.freeIndices()
