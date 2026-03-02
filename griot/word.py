@@ -1,6 +1,6 @@
 import pickle
 from typing import Generator
-
+from typing import cast
 
 
 
@@ -45,12 +45,12 @@ class StrictVocab(): #all strings MUST seperate words with the spacer variable
         Args:
             key: The token/index to delete."""
         if type(key) == int:
-            x = self.tokenDict[key]
+            y : str = self.tokenDict[key]
             del self.tokenDict[key]
-            del self.vocabDict[x]
+            del self.vocabDict[y]
             self.freed.append(key)
         elif type(key) == str:
-            x = self.vocabDict[key]
+            x : int = self.vocabDict[key]
             del self.vocabDict[key]
             del self.tokenDict[x]
             self.freed.append(x)
@@ -59,12 +59,12 @@ class StrictVocab(): #all strings MUST seperate words with the spacer variable
         return
     def __getitem__(self, key: int | str) -> int | str:
         if type(key) == int:
-            x = self.tokenDict.get(key)
+            x = self.tokenDict.get(key,self.nulTok[0])
             if x == None:
                 return self.nulTok[1]
             return x
         elif type(key) == str:
-            x = self.vocabDict.get(key)
+            x = self.vocabDict.get(key,self.nulTok[0])
             if x == None:
                 return self.nulTok[0]
             return x
@@ -87,7 +87,7 @@ class StrictVocab(): #all strings MUST seperate words with the spacer variable
             yield self.freed.pop(0)
         x : int = len(self.tokenDict)
         while True:
-            if self.tokenDict.get(x) == None:
+            if self.tokenDict.get(x,self.nulTok[1]) == None:
                 yield x
                 x+=1
     def addWords(self,words:list[str] | str) -> None:
@@ -122,26 +122,28 @@ class StrictVocab(): #all strings MUST seperate words with the spacer variable
         return out
     def detokenizeLines(self,lines:list[list[int]] | list[int]) -> list[str]:
         out = []
-
+        line : list[int]
+        y = lines
         if type(lines) == list[int]:
-            tmp = [[]]
-            for x in lines:
+            linesy : list[int] = cast(list[int], lines)
+            tmp : list[list[int]]= [[]]
+            for x in linesy:
                 if x == self.eomTok[1]:
                     tmp.append([])
                 else:
                     tmp[-1].append(x)
-            lines = tmp
-
-        for line in lines:
+            y = tmp
+        y = cast(list[list[int]],y)
+        for line in y:
             out.append(self.detokenizeLine(line)) # pyright: ignore[reportArgumentType]
         return out
     
 
     
     def lazyTokenizeLines(self,lines:list[str]):
-        raise NotImplemented
+        raise NotImplementedError
     def lazyDetokenizeLines(self,lines:list[list[int]]):
-        raise NotImplemented
+        raise NotImplementedError
 
 
 
@@ -174,9 +176,9 @@ class Vocab(): #no spacers, allows encoding parts of words
         Args:
             item: The token/index to check"""
         if type(item) == int:
-            return type(self.tokenDict.get(item))==int
+            return type(self.tokenDict.get(item,self.nulTok[0]))==int
         elif type(item) == str:
-            return self.vocabDict.get(item)==str
+            return self.vocabDict.get(item,self.nulTok[1])==str
         else:
             raise TypeError
     def __delitem__(self, key : int | str) -> None:
@@ -189,24 +191,24 @@ class Vocab(): #no spacers, allows encoding parts of words
             del self.vocabDict[x]
             self.freed.append(key)
         elif type(key) == str:
-            x = self.vocabDict[key]
+            y = self.vocabDict[key]
             del self.vocabDict[key]
-            del self.tokenDict[x]
-            self.freed.append(x)
+            del self.tokenDict[y]
+            self.freed.append(y)
         else:
             raise TypeError
         return
     def __getitem__(self, key: int | str) -> int | str:
         if type(key) == int:
-            x = self.tokenDict.get(key)
+            x = self.tokenDict.get(key,self.nulTok[1])
             if x == None:
                 return self.nulTok[1]
             return x
         elif type(key) == str:
-            x = self.vocabDict.get(key)
-            if x == None:
+            y = self.vocabDict.get(key,self.nulTok[0])
+            if y == None:
                 return self.nulTok[0]
-            return x
+            return y
         else:
             raise TypeError
     def __setitem__(self, key: int | str, value: int | str) -> None:
@@ -238,6 +240,6 @@ class Vocab(): #no spacers, allows encoding parts of words
 
 
     def lazyTokenizeLines(self,lines:list[str]):
-        raise NotImplemented
+        raise NotImplementedError
     def lazyDetokenizeLines(self,lines:list[list[int]]):
-        raise NotImplemented
+        raise NotImplementedError

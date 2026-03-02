@@ -32,9 +32,9 @@ class Vocab():
         Args:
             item: The token/index to check"""
         if type(item) == int:
-            return type(self.tokenDict.get(item))==int
+            return type(self.tokenDict.get(item,self.nulTok[0]))==int
         elif type(item) == str:
-            return self.vocabDict.get(item)==str
+            return self.vocabDict.get(item,self.nulTok[1])==str
         else:
             raise TypeError
     def __delitem__(self, key : int | str) -> None:
@@ -47,24 +47,24 @@ class Vocab():
             del self.vocabDict[x]
             self.freed.append(key)
         elif type(key) == str:
-            x = self.vocabDict[key]
+            y = self.vocabDict[key]
             del self.vocabDict[key]
-            del self.tokenDict[x]
-            self.freed.append(x)
+            del self.tokenDict[y]
+            self.freed.append(y)
         else:
             raise TypeError
         return
     def __getitem__(self, key: int | str) -> int | str:
         if type(key) == int:
-            x = self.tokenDict.get(key)
+            x = self.tokenDict.get(key,self.nulTok[1])
             if x == None:
                 return self.nulTok[1]
             return x
         elif type(key) == str:
-            x = self.vocabDict.get(key)
-            if x == None:
+            y = self.vocabDict.get(key,self.nulTok[0])
+            if y == None:
                 return self.nulTok[0]
-            return x
+            return y
         else:
             raise TypeError
     def __setitem__(self, key: int | str, value: int | str) -> None:
@@ -82,7 +82,7 @@ class Vocab():
             yield self.freed.pop(0)
         x : int = len(self.tokenDict)
         while True:
-            if self.tokenDict.get(x) == None:
+            if self.tokenDict.get(x,self.nulTok[1]) == self.nulTok[1]:
                 yield x
                 x+=1
 
@@ -94,7 +94,7 @@ class Vocab():
     def tokenizeLine(self,chrs:str)-> list[int]: 
         out : list[int]= []
         for c in chrs:
-            out.append(self.vocabDict.get(c)) # pyright: ignore[reportArgumentType]
+            out.append(self.vocabDict.get(c, self.nulTok[0])) # pyright: ignore[reportArgumentType]
         out.append(self.eomTok[0])
         return out
     def tokenizeLines(self,lines:list[str]) -> list[list[int]]:
@@ -113,6 +113,6 @@ class Vocab():
             out.append(self.detokenizeLine(toks))
         return out
     def lazyTokenizeLines(self,lines:list[str]):
-        raise NotImplemented
+        raise NotImplementedError
     def lazyDetokenizeLines(self,lines:list[list[int]]):
-        raise NotImplemented
+        raise NotImplementedError
