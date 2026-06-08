@@ -42,7 +42,7 @@ class StrictVocab(): #all strings MUST seperate words with the spacer variable
         if type(item) == int:
             return type(self.tokenDict.get(item))==int
         elif type(item) == str:
-            return self.vocabDict.get(item)==str
+            return type(self.vocabDict.get(item))==str
         else:
             raise TypeError
     
