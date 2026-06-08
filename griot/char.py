@@ -1,7 +1,8 @@
 from typing import Generator
 import pickle
-import os
-import queue
+from typing import cast
+from typing import overload
+
 class Vocab():
     vocabDict : dict[str,int]
     tokenDict : dict[int,str]
@@ -27,17 +28,31 @@ class Vocab():
     def __len__(self) -> int:
         """Get the current length of vocab."""
         return len(self.vocabDict)
+    
+
+
+    @overload
+    def __contains__(self, item: int) -> bool: ...
+    @overload
+    def __contains__(self, item: str) -> bool: ...
+
     def __contains__(self, item : int | str) -> bool:
         """Check if the specified token/index is set
         Args:
             item: The token/index to check"""
         if type(item) == int:
-            return type(self.tokenDict.get(item,self.nulTok[0]))==int
+            return type(self.tokenDict.get(item))==int
         elif type(item) == str:
-            return self.vocabDict.get(item,self.nulTok[1])==str
+            return type(self.vocabDict.get(item))==str
         else:
             raise TypeError
-    def __delitem__(self, key : int | str) -> None:
+        
+    @overload
+    def __delitem__(self, key: int) -> None: ...
+    @overload
+    def __delitem__(self, key: str) -> None: ...
+
+    def __delitem__(self,key : str | int) -> None:
         """Deletes the specified token/index.
         Args:
             key: The token/index to delete."""
@@ -54,7 +69,14 @@ class Vocab():
         else:
             raise TypeError
         return
-    def __getitem__(self, key: int | str) -> int | str:
+    
+
+    @overload
+    def __getitem__(self, key: int) -> str: ...
+    @overload
+    def __getitem__(self, key: str) -> int: ...
+
+    def __getitem__(self, key: int | str) -> str | int:
         if type(key) == int:
             x = self.tokenDict.get(key,self.nulTok[1])
             if x == None:
@@ -67,6 +89,14 @@ class Vocab():
             return y
         else:
             raise TypeError
+        
+
+    @overload
+    def __setitem__(self, key: int, value: str) -> None: ...
+
+    @overload
+    def __setitem__(self, key: str, value: int) -> None: ...
+
     def __setitem__(self, key: int | str, value: int | str) -> None:
         if type(key) == int and type(value) == str:
             self.tokenDict[key] = value
@@ -77,6 +107,8 @@ class Vocab():
         else:
             raise TypeError
         return
+    
+
     def freeIndices(self) -> Generator[int, None, None]:
         while len(self.freed)>0:
             yield self.freed.pop(0)
@@ -91,28 +123,39 @@ class Vocab():
         for c in chrs:
             self[next(indices)] = c
         return
+    
+
     def tokenizeLine(self,chrs:str)-> list[int]: 
         out : list[int]= []
         for c in chrs:
             out.append(self.vocabDict.get(c, self.nulTok[0])) # pyright: ignore[reportArgumentType]
         out.append(self.eomTok[0])
         return out
+    
     def tokenizeLines(self,lines:list[str]) -> list[list[int]]:
         out : list[list[int]]  = []
         for line in lines:
             out.append(self.tokenizeLine(line))
         return out
+    
+
+
     def detokenizeLine(self,toks:list[int]) -> str:
         out : str = ''
         for tok in toks:
             out+=self.tokenDict.get(tok,self.nulTok[1])
         return out
+    
     def detokenizeLines(self,toksList:list[list[int]]) -> list[str]:
         out : list[str] = []
         for toks in toksList:
             out.append(self.detokenizeLine(toks))
         return out
+    
+
+
     def lazyTokenizeLines(self,lines:list[str]):
-        raise NotImplementedError
+        raise NotImplementedError # use generators!
     def lazyDetokenizeLines(self,lines:list[list[int]]):
-        raise NotImplementedError
+        raise NotImplementedError # use generators!
+    
